@@ -1,0 +1,23 @@
+{
+  "dependencies": {
+    "@nestjs/mapped-types": "*"
+  },
+  "name": "areal-hr_ext-test",
+  "version": "1.0.0",
+  "description": "Тестовое задание в AREAL на Vue.js и Node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/999iQ/areal-hr_ext-test.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/999iQ/areal-hr_ext-test/issues"
+  },
+  "homepage": "https://github.com/999iQ/areal-hr_ext-test#readme"
+}
