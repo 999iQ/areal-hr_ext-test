@@ -18,7 +18,15 @@ export class TaskService {
   ];
 
   create(createTaskDto: CreateTaskDto) {
-    return 'This action adds a new task';
+    const { title } = createTaskDto;
+    const newTask = {
+      id: this.tasks.length + 1,
+      title,
+      isCompleted: false,
+    }
+
+    this.tasks.push(newTask);
+    return this.tasks;
   }
 
   findAll() {
@@ -34,10 +42,14 @@ export class TaskService {
   }
 
   update(id: number, updateTaskDto: UpdateTaskDto) {
-    return `This action updates a #${id} task`;
+    const task = this.findOne(id);
+    Object.assign(task, updateTaskDto);
+    return task;
   }
 
   remove(id: number) {
-    return `This action removes a #${id} task`;
+    const task = this.findOne(id);
+    this.tasks = this.tasks.filter((t) => t.id !== task.id);
+    return task
   }
 }
