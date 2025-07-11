@@ -5,6 +5,7 @@ import { TaskModule } from './task/task.module';
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {ConfigModule, ConfigService} from "@nestjs/config";
 import {getTypeOrmConfig} from "./config/typeorm.config";
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import {getTypeOrmConfig} from "./config/typeorm.config";
       useFactory: getTypeOrmConfig,
       inject: [ConfigService]
   }),
-    TaskModule
+    TaskModule,
+    UserModule
   ],
   controllers: [AppController],
   providers: [AppService],

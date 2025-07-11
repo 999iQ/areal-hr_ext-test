@@ -1,8 +1,10 @@
+-- НЕ АКТУАЛЬНЫЙ КОД. ТАБЛИЦЫ СОЗДАЮТСЯ В TYPEORM
 -- Основные справочные таблицы
 CREATE TABLE organizations (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    comment TEXT
+    comment TEXT,
+    deleted_at TIMESTAMP DEFAULT null
 );
 
 CREATE TABLE departments (
@@ -10,12 +12,14 @@ CREATE TABLE departments (
     organization_id INTEGER REFERENCES organizations(id),
     parent_id INTEGER REFERENCES departments(id),
     name VARCHAR(255) NOT NULL,
-    comment TEXT
+    comment TEXT,
+    deleted_at TIMESTAMP DEFAULT null
 );
 
 CREATE TABLE positions (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE
+    name VARCHAR(255) NOT NULL UNIQUE,
+    deleted_at TIMESTAMP DEFAULT null
 );
 
 -- Данные о сотрудниках
@@ -30,7 +34,8 @@ CREATE TABLE employees (
     passport_issue_date DATE,
     passport_department_code VARCHAR(7),
     passport_issued_by TEXT,
-    registration_address JSONB
+    registration_address JSONB,
+    deleted_at TIMESTAMP DEFAULT null
 );
 
 -- Хранение файлов
@@ -38,7 +43,8 @@ CREATE TABLE files (
     id SERIAL PRIMARY KEY,
     filename VARCHAR(255),
     content BYTEA,
-    employee_id INTEGER REFERENCES employees(id)
+    employee_id INTEGER REFERENCES employees(id),
+    deleted_at TIMESTAMP DEFAULT null
 );
 
 -- Кадровые операции
@@ -51,7 +57,8 @@ CREATE TABLE personnel_operations (
     department_id INTEGER REFERENCES departments(id),
     position_id INTEGER REFERENCES positions(id),
     salary DECIMAL(15,2),
-    operation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    operation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP DEFAULT null
 );
 
 -- История изменений
@@ -75,8 +82,9 @@ CREATE TABLE users (
     login VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     role VARCHAR(50) CHECK (
-        role IN ('admin', 'hr_manager')
-    )
+        role IN ('admin', 'manager')
+    ),
+    deleted_at TIMESTAMP DEFAULT null
 );
 
 -- Индекс для быстрого поиска сотрудников по паспортным данным

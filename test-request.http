@@ -1,6 +1,69 @@
-GET http://localhost:3000/task
+###
+GET http://localhost:3000/task/all
 Accept: application/json
 
-POST http://localhost:8080/task
+###
+POST http://localhost:3000/task
+Content-Type: application/json
+{
+  "title": ""
+}
+
+###
+PATCH localhost:3000/task/2
+Content-Type: application/json
+{
+  "title": "PATCH TASK22"
+}
+
+###
+DELETE localhost:3000/task/2
 
 
+
+### USERS
+GET http://localhost:3000/task/all
+Accept: application/json
+
+###
+POST http://localhost:3000/task
+Content-Type: application/json
+{
+  "title": ""
+}
+
+###
+PATCH localhost:3000/task/2
+Content-Type: application/json
+{
+  "title": "PATCH TASK22"
+}
+
+###
+DELETE localhost:3000/task/2
+
+
+
+###
+POST localhost:3000/users
+Content-Type: application/json
+
+{
+  "lastName": "Штин",
+  "firstName": "Роман",
+  "email": "romanstin001@gmail.com",
+  "login": "roma4444",
+  "password": "Roma4444_",
+  "role": "admin"
+}
+
+###
+DELETE localhost:3000/users/3
+
+###
+PATCH localhost:3000/users/4
+Content-Type: application/json
+
+{
+  "middleName": "Валерьевич"
+}

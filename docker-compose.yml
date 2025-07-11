@@ -1,4 +1,20 @@
-FROM ubuntu:latest
-LABEL authors="roman"
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_PASSWORD=${PG_PASS}
+    ports:
+      - 5555:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - nestjs
 
-ENTRYPOINT ["top", "-b"]
+volumes:
+  postgres_data:
+
+networks:
+  nestjs:
