@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import {UserEntity} from "./entities/user.entity";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
+import {AuditHistoryEntity} from "../audit_history/entities/audit_history.entity";
 
 @Injectable()
 export class UserService {
@@ -26,7 +27,7 @@ export class UserService {
 
     try {
       const result: UserEntity = await this.userRepository.query(query, [
-          cUserDto.lastName, cUserDto.firstName, cUserDto.middleName,
+          cUserDto.last_name, cUserDto.first_name, cUserDto.middle_name,
           cUserDto.email, cUserDto.login, cUserDto.password, cUserDto.role
         ]);
       console.log('User created successfully:', result);
@@ -37,15 +38,20 @@ export class UserService {
     }
   }
 
-  async findAll(): Promise<UserEntity[]> {
+  async findAll(options: { page: number; limit: number }):
+      Promise<{ data: UserEntity[]; total: number; page: number; limit: number }> {
+    const skip = (options.page - 1) * options.limit;
     const tableName = this.getTableName();
-    const query = `SELECT * FROM "${tableName}"`;
+    const query = `SELECT * FROM "${tableName}" ORDER BY id LIMIT ${options.limit} OFFSET ${skip}`;
 
     const result: UserEntity[] = await this.userRepository.query(query);
-    if (!result || result.length <= 0) {
-      throw new NotFoundException(`Users not found`);
-    }
-    return result;
+
+    return {
+      data: result,
+      total: result.length,
+      page: options.page,
+      limit: options.limit,
+    };
   }
 
   async findOne(id: number): Promise<UserEntity> {
@@ -59,7 +65,7 @@ export class UserService {
     return result[0];
   }
 
-  async update(id: number, uUserDto: UpdateUserDto): Promise<UserEntity> {
+  async update(id: number, uUserDto: UpdateUserDto): Promise<boolean> {
     const tableName = this.getTableName();
 
     // Строим динамический запрос
@@ -69,19 +75,19 @@ export class UserService {
 
     // КОСТЫЛЬ В ВИДЕ ДИНАМИЧЕСКОГО СОЗДАНИЯ UPDATE SQL запроса
     // только для заполненных переменных
-    if (uUserDto.lastName !== undefined) {
+    if (uUserDto.last_name !== undefined) {
       updateFields.push(`last_name = $${paramIndex}`);
-      params.push(uUserDto.lastName);
+      params.push(uUserDto.last_name);
       paramIndex++;
     }
-    if (uUserDto.firstName !== undefined) {
+    if (uUserDto.first_name !== undefined) {
       updateFields.push(`first_name = $${paramIndex}`);
-      params.push(uUserDto.firstName);
+      params.push(uUserDto.first_name);
       paramIndex++;
     }
-    if (uUserDto.middleName !== undefined) {
+    if (uUserDto.middle_name !== undefined) {
       updateFields.push(`middle_name = $${paramIndex}`);
-      params.push(uUserDto.middleName);
+      params.push(uUserDto.middle_name);
       paramIndex++;
     }
     if (uUserDto.email !== undefined) {
@@ -104,6 +110,11 @@ export class UserService {
       params.push(uUserDto.role);
       paramIndex++;
     }
+    if (uUserDto.deleted_at !== undefined) {
+      updateFields.push(`deleted_at = $${paramIndex}`);
+      params.push(uUserDto.deleted_at.toString());
+      paramIndex++;
+    }
 
     // Если нет полей для обновления, просто выходим (или выбрасываем ошибку)
     if (updateFields.length === 0) {
@@ -116,9 +127,9 @@ export class UserService {
       `;
 
     try{
-      const result: UserEntity[] = await this.userRepository.query(query, params);
+      const result: UserEntity = await this.userRepository.query(query, params);
       console.log(`User with id ${id} updated successfully.`)
-      return result[0];
+      return true;
     } catch (error) {
       console.error('Error updating user:', error);
       throw error;

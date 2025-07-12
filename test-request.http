@@ -49,8 +49,8 @@ POST localhost:3000/users
 Content-Type: application/json
 
 {
-  "lastName": "Штин",
-  "firstName": "Роман",
+  "last_name": "Штин",
+  "first_name": "Роман",
   "email": "romanstin001@gmail.com",
   "login": "roma4444",
   "password": "Roma4444_",
@@ -65,5 +65,31 @@ PATCH localhost:3000/users/4
 Content-Type: application/json
 
 {
-  "middleName": "Валерьевич"
+  "deleted_at": "2025-07-12 19:33:03.591934"
+}
+
+
+
+###
+POST localhost:3000/audit_history
+Content-Type: application/json
+
+{
+  "object_type": "test",
+  "object_id": 1,
+  "old_value":  "123",
+  "new_value":  "321",
+  "source_info":  "schpion",
+  "user_id": 4
+}
+
+
+###
+POST localhost:3000/employees
+Content-Type: application/json
+
+{
+  "last_name": "Штин",
+  "first_name": "Роман",
+  "middle_name": "Валерьевич"
 }
