@@ -93,3 +93,16 @@ Content-Type: application/json
   "first_name": "Роман",
   "middle_name": "Валерьевич"
 }
+
+###
+GET localhost:3000/employees/f
+
+
+###
+POST localhost:3000/passport-info
+Content-Type: application/json
+
+{
+  "passport_data": "{\"seria\": 1234, \"nomer\": 123456}",
+  "employee_id": 1
+}

@@ -7,6 +7,7 @@ import {getTypeOrmConfig} from "./config/typeorm.config";
 import { UserModule } from './user/user.module';
 import { AuditHistoryModule } from './audit_history/audit_history.module';
 import { EmployeesModule } from './employees/employees.module';
+import { PassportInfoModule } from './passport_info/passport_info.module';
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { EmployeesModule } from './employees/employees.module';
   }),
     UserModule,
     AuditHistoryModule,
-    EmployeesModule
+    EmployeesModule,
+    PassportInfoModule
   ],
   controllers: [AppController],
   providers: [AppService],

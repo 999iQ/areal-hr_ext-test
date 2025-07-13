@@ -38,11 +38,14 @@ export class UserService {
     }
   }
 
-  async findAll(options: { page: number; limit: number }):
+  async findAll(options: { page: number; limit: number; sortField: string; order: string}):
       Promise<{ data: UserEntity[]; total: number; page: number; limit: number }> {
     const skip = (options.page - 1) * options.limit;
     const tableName = this.getTableName();
-    const query = `SELECT * FROM "${tableName}" ORDER BY id LIMIT ${options.limit} OFFSET ${skip}`;
+    const query = `
+      SELECT * FROM "${tableName}" ORDER BY ${options.sortField} ${options.order} 
+      LIMIT ${options.limit} OFFSET ${skip}
+      `;
 
     const result: UserEntity[] = await this.userRepository.query(query);
 
@@ -132,19 +135,6 @@ export class UserService {
       return true;
     } catch (error) {
       console.error('Error updating user:', error);
-      throw error;
-    }
-  }
-
-  async remove(id: number)  {
-    const tableName = this.getTableName();
-    const query = `DELETE FROM "${tableName}" WHERE id = ${id}`;
-    try{
-      const result: UserEntity[] = await this.userRepository.query(query);
-      console.log(`User with id ${id} removed successfully.`)
-      return true;
-    } catch (error) {
-      console.error('Error remove user:', error);
       throw error;
     }
   }

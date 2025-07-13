@@ -3,6 +3,7 @@ import { CreateAuditHistoryDto } from './dto/create-audit_history.dto';
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {AuditHistoryEntity} from "./entities/audit_history.entity";
+import {UserEntity} from "../user/entities/user.entity";
 
 @Injectable()
 export class AuditHistoryService {
@@ -36,11 +37,14 @@ export class AuditHistoryService {
     }
   }
 
-  async findAll(options: { page: number; limit: number }):
+  async findAll(options: { page: number; limit: number; sortField: string; order: string}):
       Promise<{ data: AuditHistoryEntity[]; total: number; page: number; limit: number }> {
     const skip = (options.page - 1) * options.limit;
     const tableName = this.getTableName();
-    const query = `SELECT * FROM "${tableName}" ORDER BY id LIMIT ${options.limit} OFFSET ${skip}`;
+    const query = `
+      SELECT * FROM "${tableName}" ORDER BY ${options.sortField} ${options.order} 
+      LIMIT ${options.limit} OFFSET ${skip}
+      `;
 
     const result: AuditHistoryEntity[] = await this.auditRepository.query(query);
 

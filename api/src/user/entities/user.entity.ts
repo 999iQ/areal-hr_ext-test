@@ -1,5 +1,4 @@
 import {Column, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
-import {AuditHistoryEntity} from "../../audit_history/entities/audit_history.entity";
 
 @Entity({name: 'users'})
 export class UserEntity {
@@ -24,6 +23,4 @@ export class UserEntity {
     @DeleteDateColumn({type: 'timestamp', nullable: true})
     deleted_at: Date;
 
-    @OneToMany(type => AuditHistoryEntity, audit => audit.user_id)
-    AuditHistories: AuditHistoryEntity[];
 }

@@ -7,15 +7,14 @@ import {
   Param,
   Delete,
   Query,
-  DefaultValuePipe,
   ParseIntPipe,
-  NotFoundException, BadGatewayException
+  UsePipes, ValidationPipe
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import {AuditHistoryEntity} from "../audit_history/entities/audit_history.entity";
 import {UserEntity} from "./entities/user.entity";
+import {GetUserDto} from "./dto/get-user.dto";
 
 @Controller('users')
 export class UserController {
@@ -27,28 +26,27 @@ export class UserController {
   }
 
   @Get()
-  async findAll(
-      @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
-      @Query('limit', new DefaultValuePipe(1000), ParseIntPipe) limit: number = 1000,
-  ): Promise<{ data: UserEntity[]; total: number; page: number; limit: number }> {
-    if (page < 1 || limit < 1) {
-      throw new BadGatewayException(`Page and limit values must be greater than 0`);
-    }
-    return this.userService.findAll({page: page, limit: limit});
+  @UsePipes(new ValidationPipe())
+  async findAll(@Query() query: GetUserDto): Promise<{ data: UserEntity[]; total: number; page: number; limit: number }> {
+    return this.userService.findAll(
+        {page: query.page, limit: query.limit, sortField: query.sort || 'id', order: query.order || 'asc'},
+    );
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id', ParseIntPipe) id: string) {
     return this.userService.findOne(+id);
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  async update(@Param('id', ParseIntPipe) id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: string) {
+    const updateUserDto = new UpdateUserDto()
+    updateUserDto.deleted_at = new Date();
+    return this.userService.update(+id, updateUserDto);
   }
 }

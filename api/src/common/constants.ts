@@ -3,3 +3,7 @@ export const STRING_MESSAGE = 'Поле должно быть строкой';
 export const NOT_ENUM_MESSAGE = 'Роль должна быть выбрана из списка';
 export const LENGTH_MESSAGE_2 = 'Длина текста от 2 до 255 символов';
 export const NOT_INT_MESSAGE = 'Поле должно быть числом';
+export const NOT_DATE_MESSAGE = 'Поле должно быть датой формата: 2014-10-13T18:13:00.000Z';
+export const MAX_INT_MESSAGE = 'Слишком большое число';
+export const NOT_POSITIVE_INT_MESSAGE = 'Число должно быть положительным';
+export const NOT_JSON_MESSAGE = 'Поле должно быть формата JSON';

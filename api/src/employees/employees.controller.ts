@@ -1,7 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+  UsePipes,
+  ValidationPipe, Query
+} from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
+import {EmployeeEntity} from "./entities/employee.entity";
+import {GetEmployeeDto} from "./dto/get-employee.dto";
 
 @Controller('employees')
 export class EmployeesController {
@@ -13,22 +26,27 @@ export class EmployeesController {
   }
 
   @Get()
-  async findAll() {
-    return this.employeesService.findAll();
+  @UsePipes(new ValidationPipe())
+  async findAll(@Query() query: GetEmployeeDto): Promise<{ data: EmployeeEntity[]; total: number; page: number; limit: number }> {
+    return this.employeesService.findAll(
+        {page: query.page, limit: query.limit, sortField: query.sort || 'id', order: query.order || 'asc'},
+    );
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id', ParseIntPipe) id: string) {
     return this.employeesService.findOne(+id);
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateEmployeeDto: UpdateEmployeeDto) {
+  async update(@Param('id', ParseIntPipe) id: string, @Body() updateEmployeeDto: UpdateEmployeeDto) {
     return this.employeesService.update(+id, updateEmployeeDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return this.employeesService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: string) {
+    const updateEmployeeDto = new UpdateEmployeeDto()
+    updateEmployeeDto.deleted_at = new Date();
+    return this.employeesService.update(+id, updateEmployeeDto);
   }
 }
