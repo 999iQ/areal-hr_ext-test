@@ -22,6 +22,19 @@ export class IsTextConstraint implements ValidatorConstraintInterface {
     }
 }
 
+@ValidatorConstraint({ name: 'isSafelyTitle', async: false })
+export class IsTitleConstraint implements ValidatorConstraintInterface {
+    validate(text: string) {
+        // Регулярка, которая проверяет наличие только латинских и русских символов
+        const regex = /^[a-zA-Zа-яА-Я0-9.,\s]*$/;
+        return regex.test(text);
+    }
+
+    defaultMessage(): string {
+        return 'Текст должен содержать только цифры, латинские и русские буквы.'
+    }
+}
+
 @ValidatorConstraint({ name: 'isLogin', async: false })
 export class IsLoginConstraint implements ValidatorConstraintInterface {
     validate(text: string) {

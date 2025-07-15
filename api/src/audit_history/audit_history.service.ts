@@ -1,9 +1,8 @@
-import {Injectable} from '@nestjs/common';
+import {ConflictException, Injectable} from '@nestjs/common';
 import { CreateAuditHistoryDto } from './dto/create-audit_history.dto';
 import {InjectRepository} from "@nestjs/typeorm";
-import {Repository} from "typeorm";
+import {QueryFailedError, Repository} from "typeorm";
 import {AuditHistoryEntity} from "./entities/audit_history.entity";
-import {UserEntity} from "../user/entities/user.entity";
 
 @Injectable()
 export class AuditHistoryService {
@@ -32,9 +31,15 @@ export class AuditHistoryService {
       console.log('Log created successfully:', result);
       return result;
     } catch (error) {
-      console.error('Error creating Log:', error);
-      throw error;
+      if (error instanceof QueryFailedError && error.message.includes('violates foreign key constraint')) {
+        throw new ConflictException('Body params: user_id is not correct, pls check it')
+      } else {
+        console.error('Error creating Log:', error);
+        throw error;
+      }
+
     }
+
   }
 
   async findAll(options: { page: number; limit: number; sortField: string; order: string}):

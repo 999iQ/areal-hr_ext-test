@@ -1,7 +1,6 @@
 import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
-import {UserEntity} from "../user/entities/user.entity";
 import {EmployeeEntity} from "./entities/employee.entity";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
@@ -58,11 +57,11 @@ export class EmployeesService {
     };
   }
 
-  async findOne(id: number) {
+  async findOne(id: number):Promise<EmployeeEntity> {
     const tableName = this.getTableName();
     const query = `SELECT * FROM "${tableName}" WHERE id = ${id}`;
 
-    const result: UserEntity[] = await this.employeeRepository.query(query);
+    const result: EmployeeEntity[] = await this.employeeRepository.query(query);
     if (!result[0]) {
       throw new NotFoundException(`Employee with id ${id} not found`);
     }
@@ -107,7 +106,7 @@ export class EmployeesService {
 
     // Если нет полей для обновления, просто выходим (или выбрасываем ошибку)
     if (updateFields.length === 0) {
-      console.warn(`No fields to update for user with id ${id}.`);
+      console.warn(`No fields to update for Employee with id ${id}.`);
       throw new BadRequestException("No fields to update")
     }
 

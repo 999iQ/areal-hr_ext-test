@@ -3,13 +3,7 @@ import {
   Get,
   Post,
   Body,
-  Patch,
-  Param,
-  Delete,
-  Query,
-  DefaultValuePipe,
-  ParseIntPipe,
-  BadGatewayException, UsePipes, ValidationPipe
+  Query, UsePipes, ValidationPipe
 } from '@nestjs/common';
 import { AuditHistoryService } from './audit_history.service';
 import { CreateAuditHistoryDto } from './dto/create-audit_history.dto';

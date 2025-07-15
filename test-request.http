@@ -106,3 +106,46 @@ Content-Type: application/json
   "passport_data": "{\"seria\": 1234, \"nomer\": 123456}",
   "employee_id": 1
 }
+
+###
+POST http://localhost:3000/files
+Content-Type: application/json
+
+{
+  "filename": "test",
+  "download_path": "locale/file",
+  "file_size": 123,
+  "employee_id": 1
+}
+
+###
+POST http://localhost:3000/organizations
+Content-Type: application/json
+
+{
+  "name": "tes",
+  "comment": "top org",
+  "file_size": 123,
+  "employee_id": 1
+}
+
+###
+POST http://localhost:3000/departments
+Content-Type: application/json
+
+{
+"name": "test",
+"comment": "top department",
+"organization_id": 2
+}
+
+###
+POST http://localhost:3000/recruit-opers
+Content-Type: application/json
+
+{
+  "salary": 100,
+  "employee_id": 2,
+  "department_id": 1,
+  "position_id": 1
+}

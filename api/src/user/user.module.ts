@@ -4,7 +4,6 @@ import { UserController } from './user.controller';
 import {UserEntity} from "./entities/user.entity";
 import { TypeOrmModule} from "@nestjs/typeorm";
 import {IsEntityFieldValidator} from "../common/validators";
-import {DataSource} from "typeorm";
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity])],

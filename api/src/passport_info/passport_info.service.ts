@@ -1,11 +1,9 @@
-import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, ConflictException, Injectable, NotFoundException} from '@nestjs/common';
 import { CreatePassportInfoDto } from './dto/create-passport_info.dto';
 import { UpdatePassportInfoDto } from './dto/update-passport_info.dto';
 import {InjectRepository} from "@nestjs/typeorm";
-import {Repository} from "typeorm";
+import {QueryFailedError, Repository} from "typeorm";
 import {PassportInfoEntity} from "./entities/passport_info.entity";
-import {CreateUserDto} from "../user/dto/create-user.dto";
-import {UserEntity} from "../user/entities/user.entity";
 
 @Injectable()
 export class PassportInfoService {
@@ -33,8 +31,12 @@ export class PassportInfoService {
       console.log('PassportInfo created successfully:', result);
       return result;
     } catch (error) {
-      console.error('Error creating PassportInfo:', error);
-      throw error;
+      if (error instanceof QueryFailedError && error.message.includes('violates foreign key constraint')) {
+        throw new ConflictException('Body params: employee_id is not correct, pls check it')
+      } else {
+        console.error('Error creating PassportInfo:', error);
+        throw error;
+      }
     }
   }
 
@@ -44,7 +46,7 @@ export class PassportInfoService {
 
     const result: PassportInfoEntity[] = await this.passportRepository.query(query);
     if (!result[0]) {
-      throw new NotFoundException(`User with id ${id} not found`);
+      throw new NotFoundException(`PassportInfo with id ${id} not found`);
     }
     return result[0];
   }
@@ -72,7 +74,7 @@ export class PassportInfoService {
 
     // Если нет полей для обновления, просто выходим (или выбрасываем ошибку)
     if (updateFields.length === 0) {
-      console.warn(`No fields to update for user with id ${id}.`);
+      console.warn(`No fields to update for PassportInfo with id ${id}.`);
       throw new BadRequestException("No fields to update")
     }
 
@@ -81,7 +83,7 @@ export class PassportInfoService {
       `;
 
     try{
-      const result: UserEntity = await this.passportRepository.query(query, params);
+      const result: PassportInfoEntity = await this.passportRepository.query(query, params);
       console.log(`PassportInfo with id ${id} updated successfully.`)
       return true;
     } catch (error) {

@@ -1,9 +1,9 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { CreateEmployeeDto } from './create-employee.dto';
+import { CreatePositionDto } from './create-position.dto';
 import {IsDate, IsOptional} from "class-validator";
 import {NOT_DATE_MESSAGE} from "../../common/constants";
 
-export class UpdateEmployeeDto extends PartialType(CreateEmployeeDto) {
+export class UpdatePositionDto extends PartialType(CreatePositionDto) {
     @IsOptional()
     @IsDate({message: NOT_DATE_MESSAGE})
     deleted_at?: Date;

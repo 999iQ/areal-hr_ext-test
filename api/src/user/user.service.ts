@@ -1,9 +1,9 @@
-import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, ConflictException, Injectable, NotFoundException} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import {UserEntity} from "./entities/user.entity";
 import {InjectRepository} from "@nestjs/typeorm";
-import {Repository} from "typeorm";
+import {QueryFailedError, Repository} from "typeorm";
 import {AuditHistoryEntity} from "../audit_history/entities/audit_history.entity";
 
 @Injectable()
@@ -33,8 +33,13 @@ export class UserService {
       console.log('User created successfully:', result);
       return result;
     } catch (error) {
-      console.error('Error creating user:', error);
-      throw error;
+      if (error instanceof QueryFailedError && error.message.includes('duplicate key value violates unique constraint')) {
+        // Обработка ошибки нарушения уникальности
+        throw new ConflictException('User with this Email or Login already exists');
+      } else {
+        console.error('Error creating user:', error);
+        throw error;
+      }
     }
   }
 
