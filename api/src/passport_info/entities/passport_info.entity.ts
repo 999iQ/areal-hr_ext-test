@@ -1,4 +1,4 @@
-import {Column, DeleteDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import {EmployeeEntity} from "../../employees/entities/employee.entity";
 
 @Entity({name: 'passport_info'})
@@ -9,7 +9,7 @@ export class PassportInfoEntity {
     @Column({type: 'json', nullable: false})
     passport_data: string;
 
-    @OneToOne(type => EmployeeEntity)
+    @ManyToOne(type => EmployeeEntity)
     @JoinColumn({ name: "employee_id" })
     employee_id: EmployeeEntity; // FK
 

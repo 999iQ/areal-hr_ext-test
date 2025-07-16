@@ -4,10 +4,8 @@ import {
     ValidatorConstraint,
     ValidatorConstraintInterface
 } from "class-validator";
-import {Injectable, Scope} from "@nestjs/common";
-import {InjectDataSource, InjectRepository} from "@nestjs/typeorm";
-import {DataSource, EntityTarget, ObjectLiteral, Repository} from "typeorm";
-import {UserEntity} from "../user/entities/user.entity";
+import {Injectable} from "@nestjs/common";
+import {DataSource } from "typeorm";
 
 @ValidatorConstraint({ name: 'isSafelyText', async: false })
 export class IsTextConstraint implements ValidatorConstraintInterface {

@@ -1,4 +1,4 @@
-import {Column, DeleteDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import {EmployeeEntity} from "../../employees/entities/employee.entity";
 
 @Entity({name: 'files'})
@@ -13,7 +13,7 @@ export class FilesEntity {
     @Column({type: 'int', nullable: false})
     file_size: number;
 
-    @OneToOne(type => EmployeeEntity)
+    @ManyToOne(type => EmployeeEntity)
     @JoinColumn({ name: "employee_id" })
     employee_id: EmployeeEntity; // FK
 
